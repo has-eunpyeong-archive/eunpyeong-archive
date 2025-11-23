@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 은평구 아카이브 애플리케이션 배포 스크립트
+# Eunpyeong Archive Application Deployment Script
 
 set -e
 
@@ -8,16 +8,16 @@ PROJECT_DIR="/home/ubuntu/eunpyeong-archive"
 BACKEND_DIR="$PROJECT_DIR/backend"
 NGINX_CONFIG="/etc/nginx/sites-available/eunpyeong-archive"
 
-echo "🚀 은평구 아카이브 애플리케이션 배포를 시작합니다..."
+echo "Starting Eunpyeong Archive Application Deployment..."
 
-# 현재 디렉터리가 프로젝트 루트인지 확인
+# Check if current directory is project root
 if [[ ! -f "package.json" ]]; then
-    echo "❌ 프로젝트 루트 디렉터리에서 실행해주세요."
+    echo "Please run this script from the project root directory."
     exit 1
 fi
 
-# 환경 변수 파일 생성
-echo "📝 환경 변수 설정 중..."
+# Create environment variables file
+echo "Setting up environment variables..."
 cat > backend/.env << EOF
 DATABASE_URL=postgresql://eunpyeong:eunpyeong123!@localhost/eunpyeong_archive
 SECRET_KEY=your-super-secret-key-change-this-in-production
@@ -25,29 +25,29 @@ FLASK_ENV=production
 UPLOAD_FOLDER=/home/ubuntu/eunpyeong-archive/uploads
 EOF
 
-# 업로드 디렉터리 생성
+# Create upload directory
 mkdir -p uploads
 
-# Frontend 설치 및 빌드
-echo "🔧 Frontend 설치 및 빌드 중..."
+# Install and build Frontend
+echo "Installing and building Frontend..."
 npm install
 npm run build
 
-# Backend Python 가상환경 설정
-echo "🐍 Backend Python 환경 설정 중..."
+# Setup Backend Python virtual environment
+echo "Setting up Backend Python environment..."
 cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# 데이터베이스 초기화
-echo "🗄️ 데이터베이스 초기화 중..."
+# Initialize database
+echo "Initializing database..."
 flask init-db
 
 cd ..
 
-# systemd 서비스 파일 생성 - Backend
-echo "⚙️ systemd 서비스 설정 중..."
+# Create systemd service files - Backend
+echo "Setting up systemd services..."
 sudo tee /etc/systemd/system/eunpyeong-backend.service > /dev/null << EOF
 [Unit]
 Description=Eunpyeong Archive Backend
@@ -83,14 +83,14 @@ Restart=always
 WantedBy=multi-user.target
 EOF
 
-# Nginx 설정
-echo "🌐 Nginx 설정 중..."
+# Nginx configuration
+echo "Configuring Nginx..."
 sudo tee $NGINX_CONFIG > /dev/null << 'EOF'
 server {
     listen 80;
     server_name _;
     
-    # 클라이언트 최대 업로드 크기 (논문 파일용)
+    # Maximum client upload size (for research papers)
     client_max_body_size 100M;
 
     # Frontend (Next.js)
@@ -116,7 +116,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    # 파일 업로드/다운로드
+    # File upload/download
     location /uploads/ {
         proxy_pass http://127.0.0.1:5001;
         proxy_http_version 1.1;
@@ -135,8 +135,8 @@ sudo rm -f /etc/nginx/sites-enabled/default
 # 설정 파일 테스트
 sudo nginx -t
 
-# 서비스 시작 및 활성화
-echo "🔄 서비스 시작 중..."
+# Start and enable services
+echo "Starting services..."
 sudo systemctl daemon-reload
 sudo systemctl enable eunpyeong-backend
 sudo systemctl enable eunpyeong-frontend
@@ -146,25 +146,25 @@ sudo systemctl start eunpyeong-backend
 sudo systemctl start eunpyeong-frontend
 sudo systemctl restart nginx
 
-# 헬스체크 스크립트 설정
-echo "⚙️ 헬스체크 시스템 설정 중..."
+# Setup healthcheck script
+echo "Setting up healthcheck system..."
 chmod +x healthcheck.sh
 sudo cp healthcheck.sh /usr/local/bin/
 sudo touch /var/log/eunpyeong-healthcheck.log
 sudo chown ubuntu:ubuntu /var/log/eunpyeong-healthcheck.log
 
-# Cron 작업 추가 (5분마다 헬스체크 실행)
+# Add cron job (run healthcheck every 5 minutes)
 (crontab -l 2>/dev/null; echo "*/5 * * * * /usr/local/bin/healthcheck.sh") | crontab -
 
-# 관리 스크립트 권한 설정
+# Set permissions for management scripts
 chmod +x manage.sh
 chmod +x ssl-setup.sh
 
-echo "✅ 배포가 완료되었습니다!"
-echo "🌐 웹사이트가 http://your-lightsail-ip 에서 실행 중입니다."
+echo "Deployment completed successfully!"
+echo "Website is running at http://your-lightsail-ip"
 echo ""
-echo "📋 유용한 명령어:"
-echo "  - 백엔드 로그 확인: sudo journalctl -u eunpyeong-backend -f"
-echo "  - 프론트엔드 로그 확인: sudo journalctl -u eunpyeong-frontend -f"
-echo "  - Nginx 로그 확인: sudo tail -f /var/log/nginx/error.log"
-echo "  - 서비스 상태 확인: sudo systemctl status eunpyeong-backend eunpyeong-frontend nginx"
+echo "Useful commands:"
+echo "  - Check backend logs: sudo journalctl -u eunpyeong-backend -f"
+echo "  - Check frontend logs: sudo journalctl -u eunpyeong-frontend -f"
+echo "  - Check Nginx logs: sudo tail -f /var/log/nginx/error.log"
+echo "  - Check service status: sudo systemctl status eunpyeong-backend eunpyeong-frontend nginx"

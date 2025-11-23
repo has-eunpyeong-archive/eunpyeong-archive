@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# 은평구 아카이브 시스템 헬스체크 스크립트
-# Cron으로 주기적 실행하여 서비스 상태 모니터링
+# Eunpyeong Archive System Health Check Script
+# Run periodically via Cron to monitor service status
 
 LOGFILE="/var/log/eunpyeong-healthcheck.log"
 SERVICES=("eunpyeong-backend" "eunpyeong-frontend" "nginx" "postgresql")
@@ -26,7 +26,7 @@ function check_disk_space() {
     local usage=$(df / | awk 'NR==2 {print $(NF-1)}' | sed 's/%//')
     if [ $usage -gt 85 ]; then
         log_message "WARNING: Disk space usage is ${usage}%"
-        # 오래된 백업 파일 정리
+        # Clean up old backup files
         find /home/ubuntu/backups -name "*_backup_*" -mtime +3 -delete 2>/dev/null || true
         log_message "INFO: Old backup files cleaned up"
     fi
@@ -53,24 +53,24 @@ function check_web_response() {
     fi
 }
 
-# 메인 헬스체크 실행
+# Main health check execution
 log_message "INFO: Starting health check"
 
-# 서비스 상태 확인
+# Check service status
 for service in "${SERVICES[@]}"; do
     check_service $service
 done
 
-# 시스템 리소스 확인
+# Check system resources
 check_disk_space
 check_memory
 
-# 웹 응답 확인
+# Check web response
 check_web_response
 
 log_message "INFO: Health check completed"
 
-# 로그 파일 크기 제한 (1MB 이상시 회전)
+# Log file size limit (rotate if larger than 1MB)
 if [ -f $LOGFILE ] && [ $(stat -c%s $LOGFILE) -gt 1048576 ]; then
     mv $LOGFILE ${LOGFILE}.old
     touch $LOGFILE
