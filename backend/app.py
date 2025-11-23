@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, abort
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -179,6 +179,25 @@ def get_user(current_user):
 # --- Document Routes ---
 @app.route("/uploads/<path:filename>")
 def serve_upload(filename):
+    file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+
+    # Check if file exists
+    if not os.path.exists(file_path):
+        abort(404)
+
+    # Get file extension
+    file_extension = filename.lower().split(".")[-1]
+
+    # Set appropriate content type for PDF files
+    if file_extension == "pdf":
+        response = send_from_directory(
+            app.config["UPLOAD_FOLDER"], filename, mimetype="application/pdf"
+        )
+        # Ensure PDF is displayed inline, not downloaded
+        response.headers["Content-Disposition"] = f'inline; filename="{filename}"'
+        return response
+
+    # For other files, serve normally
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 

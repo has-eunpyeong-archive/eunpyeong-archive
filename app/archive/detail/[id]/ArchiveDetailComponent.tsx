@@ -52,10 +52,11 @@ const FileViewer = ({
     return (
       <div className="w-full h-[800px] border rounded-lg">
         <iframe
-          src={fileUrl}
+          src={`${fileUrl}#view=fitH`}
           width="100%"
           height="100%"
           title={file_path}
+          style={{ border: "none" }}
         ></iframe>
       </div>
     );
