@@ -22,14 +22,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "은평구 아카이브",
-    template: "%s | 은평구 아카이브",
+    default: "은평 아카이브",
+    template: "%s | 은평 아카이브",
   },
   description:
     "은평구 지역의 논문, 자료 등을 체계적으로 관리하고 공유하는 디지털 아카이브 시스템",
   keywords: ["은평구", "아카이브", "논문", "자료", "디지털", "도서관"],
-  authors: [{ name: "은평구 아카이브 팀" }],
-  creator: "은평구 아카이브 시스템",
+  authors: [{ name: "은평 아카이브 팀" }],
+  creator: "은평 아카이브 시스템",
   publisher: "은평구",
   formatDetection: {
     email: false,
