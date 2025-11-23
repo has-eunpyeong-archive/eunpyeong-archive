@@ -45,7 +45,7 @@ const FileViewer = ({
     return <p className="text-gray-500">표시할 파일이 없습니다.</p>;
   }
 
-  const fileUrl = `http://127.0.0.1:5001/uploads/${file_path}`;
+  const fileUrl = `/uploads/${file_path}`;
   const fileExtension = file_path.split(".").pop()?.toLowerCase();
 
   if (fileExtension === "pdf") {
@@ -181,7 +181,7 @@ export default function ArchiveDetailComponent({
     } catch (err) {
       console.error("다운로드 횟수 증가에 실패했습니다.", err);
     }
-    const fileUrl = `http://127.0.0.1:5001/uploads/${archiveDocument.file_path}`;
+    const fileUrl = `/uploads/${archiveDocument.file_path}`;
     const link = document.createElement("a");
     link.href = fileUrl;
     link.download = archiveDocument.file_path;
