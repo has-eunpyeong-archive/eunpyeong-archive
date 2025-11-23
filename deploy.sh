@@ -128,6 +128,25 @@ server {
 }
 EOF
 
+# Check for processes using port 80 and stop them
+echo "Checking for port 80 conflicts..."
+if sudo lsof -Pi :80 -sTCP:LISTEN -t >/dev/null ; then
+    echo "Port 80 is in use. Checking for Apache..."
+    if systemctl is-active --quiet apache2; then
+        echo "Stopping Apache server..."
+        sudo systemctl stop apache2
+        sudo systemctl disable apache2
+    fi
+    
+    # Check for other processes on port 80
+    PORT_80_PROCESSES=$(sudo lsof -Pi :80 -sTCP:LISTEN -t 2>/dev/null)
+    if [ ! -z "$PORT_80_PROCESSES" ]; then
+        echo "Warning: Other processes are using port 80:"
+        sudo lsof -Pi :80 -sTCP:LISTEN
+        echo "You may need to stop these processes manually."
+    fi
+fi
+
 # Nginx 사이트 활성화
 sudo ln -sf $NGINX_CONFIG /etc/nginx/sites-enabled/
 sudo rm -f /etc/nginx/sites-enabled/default
@@ -142,9 +161,20 @@ sudo systemctl enable eunpyeong-backend
 sudo systemctl enable eunpyeong-frontend
 sudo systemctl enable nginx
 
+# Start backend and frontend first
 sudo systemctl start eunpyeong-backend
 sudo systemctl start eunpyeong-frontend
-sudo systemctl restart nginx
+
+# Start nginx with better error handling
+echo "Starting Nginx..."
+if ! sudo systemctl start nginx; then
+    echo "Failed to start Nginx. Checking for port conflicts..."
+    sudo ss -tlnp | grep :80
+    echo "Attempting to kill processes on port 80..."
+    sudo fuser -k 80/tcp || true
+    sleep 2
+    sudo systemctl start nginx
+fi
 
 # Setup healthcheck script
 echo "Setting up healthcheck system..."
