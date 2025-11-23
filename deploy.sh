@@ -4,7 +4,10 @@
 
 set -e
 
-PROJECT_DIR="/home/ubuntu/eunpyeong-archive"
+# Auto-detect current user and home directory
+CURRENT_USER=$(whoami)
+USER_HOME=$(eval echo "~$CURRENT_USER")
+PROJECT_DIR="$USER_HOME/eunpyeong-archive"
 BACKEND_DIR="$PROJECT_DIR/backend"
 NGINX_CONFIG="/etc/nginx/sites-available/eunpyeong-archive"
 
@@ -22,7 +25,7 @@ cat > backend/.env << EOF
 DATABASE_URL=postgresql://eunpyeong:eunpyeong123!@localhost/eunpyeong_archive
 SECRET_KEY=your-super-secret-key-change-this-in-production
 FLASK_ENV=production
-UPLOAD_FOLDER=/home/ubuntu/eunpyeong-archive/uploads
+UPLOAD_FOLDER=$PROJECT_DIR/uploads
 EOF
 
 # Create upload directory
@@ -55,7 +58,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=ubuntu
+User=$CURRENT_USER
 WorkingDirectory=$BACKEND_DIR
 Environment=PATH=$BACKEND_DIR/venv/bin
 ExecStart=$BACKEND_DIR/venv/bin/gunicorn --bind 127.0.0.1:5001 --workers 3 app:app
@@ -73,7 +76,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=ubuntu
+User=$CURRENT_USER
 WorkingDirectory=$PROJECT_DIR
 Environment=NODE_ENV=production
 ExecStart=/usr/bin/npm start
@@ -130,20 +133,41 @@ EOF
 
 # Check for processes using port 80 and stop them
 echo "Checking for port 80 conflicts..."
-if sudo lsof -Pi :80 -sTCP:LISTEN -t >/dev/null ; then
-    echo "Port 80 is in use. Checking for Apache..."
-    if systemctl is-active --quiet apache2; then
-        echo "Stopping Apache server..."
-        sudo systemctl stop apache2
-        sudo systemctl disable apache2
+if command -v lsof &> /dev/null; then
+    if sudo lsof -Pi :80 -sTCP:LISTEN -t >/dev/null ; then
+        echo "Port 80 is in use. Checking for Apache..."
+        if systemctl is-active --quiet apache2; then
+            echo "Stopping Apache server..."
+            sudo systemctl stop apache2
+            sudo systemctl disable apache2
+        fi
+        
+        # Check for other processes on port 80
+        PORT_80_PROCESSES=$(sudo lsof -Pi :80 -sTCP:LISTEN -t 2>/dev/null)
+        if [ ! -z "$PORT_80_PROCESSES" ]; then
+            echo "Warning: Other processes are using port 80:"
+            sudo lsof -Pi :80 -sTCP:LISTEN
+            echo "You may need to stop these processes manually."
+        fi
     fi
-    
-    # Check for other processes on port 80
-    PORT_80_PROCESSES=$(sudo lsof -Pi :80 -sTCP:LISTEN -t 2>/dev/null)
-    if [ ! -z "$PORT_80_PROCESSES" ]; then
-        echo "Warning: Other processes are using port 80:"
-        sudo lsof -Pi :80 -sTCP:LISTEN
-        echo "You may need to stop these processes manually."
+else
+    # Use ss instead of lsof
+    if sudo ss -tlnp | grep -q ":80 "; then
+        echo "Port 80 is in use. Checking processes..."
+        sudo ss -tlnp | grep ":80 "
+        
+        # Try to stop common web servers
+        if systemctl is-active --quiet apache2; then
+            echo "Stopping Apache server..."
+            sudo systemctl stop apache2
+            sudo systemctl disable apache2
+        fi
+        
+        if systemctl is-active --quiet httpd; then
+            echo "Stopping httpd server..."
+            sudo systemctl stop httpd
+            sudo systemctl disable httpd
+        fi
     fi
 fi
 
@@ -181,7 +205,7 @@ echo "Setting up healthcheck system..."
 chmod +x healthcheck.sh
 sudo cp healthcheck.sh /usr/local/bin/
 sudo touch /var/log/eunpyeong-healthcheck.log
-sudo chown ubuntu:ubuntu /var/log/eunpyeong-healthcheck.log
+sudo chown $CURRENT_USER:$CURRENT_USER /var/log/eunpyeong-healthcheck.log
 
 # Add cron job (run healthcheck every 5 minutes)
 (crontab -l 2>/dev/null; echo "*/5 * * * * /usr/local/bin/healthcheck.sh") | crontab -

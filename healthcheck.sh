@@ -5,6 +5,7 @@
 
 LOGFILE="/var/log/eunpyeong-healthcheck.log"
 SERVICES=("eunpyeong-backend" "eunpyeong-frontend" "nginx" "postgresql")
+CURRENT_USER=$(whoami)
 
 function log_message() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> $LOGFILE
@@ -27,7 +28,8 @@ function check_disk_space() {
     if [ $usage -gt 85 ]; then
         log_message "WARNING: Disk space usage is ${usage}%"
         # Clean up old backup files
-        find /home/ubuntu/backups -name "*_backup_*" -mtime +3 -delete 2>/dev/null || true
+        USER_HOME=$(eval echo "~$CURRENT_USER")
+        find "$USER_HOME/backups" -name "*_backup_*" -mtime +3 -delete 2>/dev/null || true
         log_message "INFO: Old backup files cleaned up"
     fi
 }
@@ -74,5 +76,5 @@ log_message "INFO: Health check completed"
 if [ -f $LOGFILE ] && [ $(stat -c%s $LOGFILE) -gt 1048576 ]; then
     mv $LOGFILE ${LOGFILE}.old
     touch $LOGFILE
-    chown ubuntu:ubuntu $LOGFILE
+    chown $CURRENT_USER:$CURRENT_USER $LOGFILE
 fi

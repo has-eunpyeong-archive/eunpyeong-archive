@@ -100,7 +100,9 @@ sudo systemctl reload nginx
 
 # Update environment variables
 echo "Updating environment variables..."
-sudo sed -i "s|FRONTEND_URL=.*|FRONTEND_URL=https://$DOMAIN|" /home/ubuntu/eunpyeong-archive/backend/.env
+CURRENT_USER=$(whoami)
+USER_HOME=$(eval echo "~$CURRENT_USER")
+sudo sed -i "s|FRONTEND_URL=.*|FRONTEND_URL=https://$DOMAIN|" "$USER_HOME/eunpyeong-archive/backend/.env"
 
 # Restart backend service
 sudo systemctl restart eunpyeong-backend

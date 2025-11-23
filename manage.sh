@@ -4,8 +4,11 @@
 
 set -e
 
-PROJECT_DIR="/home/ubuntu/eunpyeong-archive"
-BACKUP_DIR="/home/ubuntu/backups"
+# Auto-detect current user and home directory
+CURRENT_USER=$(whoami)
+USER_HOME=$(eval echo "~$CURRENT_USER")
+PROJECT_DIR="$USER_HOME/eunpyeong-archive"
+BACKUP_DIR="$USER_HOME/backups"
 
 function show_help() {
     echo "Eunpyeong Archive System Management Tool"
