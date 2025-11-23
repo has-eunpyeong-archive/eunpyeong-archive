@@ -31,6 +31,12 @@ EOF
 # Create upload directory
 mkdir -p uploads
 
+# Create Frontend environment variables
+echo "Setting up Frontend environment variables..."
+cat > .env.local << EOF
+NEXT_PUBLIC_API_URL=http://localhost
+EOF
+
 # Install and build Frontend
 echo "Installing and building Frontend..."
 npm install
@@ -69,6 +75,10 @@ WantedBy=multi-user.target
 EOF
 
 # systemd 서비스 파일 생성 - Frontend
+# First, find the correct npm path
+NPM_PATH=$(which npm)
+NODE_PATH=$(which node)
+
 sudo tee /etc/systemd/system/eunpyeong-frontend.service > /dev/null << EOF
 [Unit]
 Description=Eunpyeong Archive Frontend
@@ -79,8 +89,10 @@ Type=simple
 User=$CURRENT_USER
 WorkingDirectory=$PROJECT_DIR
 Environment=NODE_ENV=production
-ExecStart=/usr/bin/npm start
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+ExecStart=$NPM_PATH start
 Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target

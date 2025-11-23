@@ -115,11 +115,11 @@ export default function ArchiveDetailComponent({
         try {
           setLoading(true);
           await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/documents/${id}/view`,
+            `${process.env.NEXT_PUBLIC_API_URL || ""}/api/documents/${id}/view`,
             { method: "PUT" },
           );
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/documents/${id}`,
+            `${process.env.NEXT_PUBLIC_API_URL || ""}/api/documents/${id}`,
           );
           if (!res.ok) {
             throw new Error("문서 정보를 가져오는 데 실패했습니다.");
@@ -173,7 +173,9 @@ export default function ArchiveDetailComponent({
     }
     try {
       await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/documents/${archiveDocument.id}/download`,
+        `${process.env.NEXT_PUBLIC_API_URL || ""}/api/documents/${
+          archiveDocument.id
+        }/download`,
         { method: "PUT" },
       );
     } catch (err) {
@@ -252,7 +254,9 @@ export default function ArchiveDetailComponent({
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/documents/${archiveDocument.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL || ""}/api/documents/${
+          archiveDocument.id
+        }`,
         {
           method: "DELETE",
           headers: {

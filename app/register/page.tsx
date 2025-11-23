@@ -1,59 +1,62 @@
-'use client';
-import { useState } from 'react';
-import Header from '../../components/Header';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+"use client";
+import { useState } from "react";
+import Header from "../../components/Header";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    grade: '',
-    agreedToTerms: false
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    grade: "",
+    agreedToTerms: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value, type } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+      [name]:
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
-      setMessage('비밀번호가 일치하지 않습니다.');
+      setMessage("비밀번호가 일치하지 않습니다.");
       return;
     }
     if (!formData.agreedToTerms) {
-      setMessage('이용약관에 동의해주세요.');
+      setMessage("이용약관에 동의해주세요.");
       return;
     }
     if (formData.password.length < 8) {
-      setMessage('비밀번호는 최소 8자 이상이어야 합니다.');
+      setMessage("비밀번호는 최소 8자 이상이어야 합니다.");
       return;
     }
 
     setIsLoading(true);
-    setMessage('');
+    setMessage("");
 
     try {
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/register`;
-      console.log('Requesting API to:', apiUrl); // 디버깅용 콘솔 로그 추가
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || ""}/api/register`;
+      console.log("Requesting API to:", apiUrl); // 디버깅용 콘솔 로그 추가
 
       const response = await fetch(apiUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: formData.fullName,
@@ -66,17 +69,22 @@ export default function Register() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || '회원가입 중 오류가 발생했습니다.');
+        throw new Error(data.error || "회원가입 중 오류가 발생했습니다.");
       }
-      
-      setMessage('회원가입이 완료되었습니다! 2초 후 로그인 페이지로 이동합니다.');
-      
+
+      setMessage(
+        "회원가입이 완료되었습니다! 2초 후 로그인 페이지로 이동합니다.",
+      );
+
       setTimeout(() => {
-        router.push('/login');
+        router.push("/login");
       }, 2000);
-      
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "알 수 없는 오류가 발생했습니다.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -102,16 +110,23 @@ export default function Register() {
 
           <div className="bg-white rounded-lg shadow-lg p-8">
             {message && (
-              <div className={`mb-4 p-3 rounded-lg text-sm ${
-                message.includes('완료') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-              }`}>
+              <div
+                className={`mb-4 p-3 rounded-lg text-sm ${
+                  message.includes("완료")
+                    ? "bg-green-50 text-green-700"
+                    : "bg-red-50 text-red-700"
+                }`}
+              >
                 {message}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="fullName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   이름
                 </label>
                 <div className="relative">
@@ -130,7 +145,10 @@ export default function Register() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   이메일
                 </label>
                 <div className="relative">
@@ -149,7 +167,10 @@ export default function Register() {
               </div>
 
               <div>
-                <label htmlFor="grade" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="grade"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   학년
                 </label>
                 <select
@@ -168,14 +189,17 @@ export default function Register() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   비밀번호
                 </label>
                 <div className="relative">
                   <input
                     id="password"
                     name="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     required
                     value={formData.password}
                     onChange={handleInputChange}
@@ -188,21 +212,30 @@ export default function Register() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
                   >
-                    <i className={`${showPassword ? 'ri-eye-off-line' : 'ri-eye-line'} w-5 h-5 flex items-center justify-center`}></i>
+                    <i
+                      className={`${
+                        showPassword ? "ri-eye-off-line" : "ri-eye-line"
+                      } w-5 h-5 flex items-center justify-center`}
+                    ></i>
                   </button>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">최소 8자 이상이어야 합니다.</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  최소 8자 이상이어야 합니다.
+                </p>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   비밀번호 확인
                 </label>
                 <div className="relative">
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
+                    type={showConfirmPassword ? "text" : "password"}
                     required
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
@@ -215,7 +248,11 @@ export default function Register() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
                   >
-                    <i className={`${showConfirmPassword ? 'ri-eye-off-line' : 'ri-eye-line'} w-5 h-5 flex items-center justify-center`}></i>
+                    <i
+                      className={`${
+                        showConfirmPassword ? "ri-eye-off-line" : "ri-eye-line"
+                      } w-5 h-5 flex items-center justify-center`}
+                    ></i>
                   </button>
                 </div>
               </div>
@@ -230,8 +267,14 @@ export default function Register() {
                   onChange={handleInputChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-200 rounded cursor-pointer"
                 />
-                <label htmlFor="agreedToTerms" className="ml-2 block text-sm text-gray-700 cursor-pointer">
-                  <Link href="/terms" className="text-blue-600 hover:text-blue-500 cursor-pointer underline">
+                <label
+                  htmlFor="agreedToTerms"
+                  className="ml-2 block text-sm text-gray-700 cursor-pointer"
+                >
+                  <Link
+                    href="/terms"
+                    className="text-blue-600 hover:text-blue-500 cursor-pointer underline"
+                  >
                     이용약관 및 개인정보처리방침
                   </Link>
                   에 동의합니다
@@ -243,7 +286,7 @@ export default function Register() {
                 disabled={isLoading}
                 className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium whitespace-nowrap cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? '가입 중...' : '회원가입'}
+                {isLoading ? "가입 중..." : "회원가입"}
               </button>
             </form>
           </div>

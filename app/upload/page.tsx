@@ -31,7 +31,7 @@ function UploadForm() {
       const fetchDocument = async () => {
         try {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/documents/${docId}`,
+            `${process.env.NEXT_PUBLIC_API_URL || ""}/api/documents/${docId}`,
           );
           if (!res.ok) {
             throw new Error("수정할 문서 정보를 가져오는데 실패했습니다.");
@@ -129,7 +129,7 @@ function UploadForm() {
       if (editId) {
         // EDIT MODE - PUT request with FormData
         response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/documents/${editId}`,
+          `${process.env.NEXT_PUBLIC_API_URL || ""}/api/documents/${editId}`,
           {
             method: "PUT",
             headers: { Authorization: `Bearer ${token}` },
@@ -139,7 +139,7 @@ function UploadForm() {
       } else {
         // CREATE MODE - POST request with FormData
         response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/documents`,
+          `${process.env.NEXT_PUBLIC_API_URL || ""}/api/documents`,
           {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
