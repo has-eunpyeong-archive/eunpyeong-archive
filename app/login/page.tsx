@@ -71,30 +71,32 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <div className="min-h-screen bg-[url('/img/bukhansan.jpg')] bg-cover bg-center bg-fixed">
+      <div className="bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <Header />
+      </div>
 
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
-                <i className="ri-user-line text-white text-2xl"></i>
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden p-8 lg:p-12">
+            <div className="text-center mb-8">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
+                  <i className="ri-user-line text-white text-2xl"></i>
+                </div>
               </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">로그인</h2>
+              <p className="text-gray-600">
+                Eunpyeong Archive 계정으로 로그인하세요
+              </p>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">로그인</h2>
-            <p className="text-gray-600">
-              Eunpyeong Archive 계정으로 로그인하세요
-            </p>
-          </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-8">
             {message && (
               <div
                 className={`mb-4 p-3 rounded-lg text-sm ${
                   message.includes("성공")
-                    ? "bg-green-50 text-green-700"
-                    : "bg-red-50 text-red-700"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
                 }`}
               >
                 {message}
@@ -116,7 +118,7 @@ export default function Login() {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 bg-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="이메일을 입력하세요"
                   />
                   <i className="ri-mail-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 flex items-center justify-center"></i>
@@ -138,7 +140,7 @@ export default function Login() {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-200 bg-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="비밀번호를 입력하세요"
                   />
                   <i className="ri-lock-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 flex items-center justify-center"></i>
@@ -162,7 +164,7 @@ export default function Login() {
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-200 rounded cursor-pointer"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
                   />
                   <label
                     htmlFor="remember-me"
@@ -190,29 +192,25 @@ export default function Login() {
                 {isLoading ? "로그인 중..." : "로그인"}
               </button>
             </form>
-          </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              계정이 없으신가요?
-              <Link
-                href="/register"
-                className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer"
-              >
-                회원가입하기
-              </Link>
-            </p>
+             <div className="text-center mt-6">
+                <p className="text-sm text-gray-600">
+                계정이 없으신가요?
+                <Link
+                    href="/register"
+                    className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer ml-1"
+                >
+                    회원가입하기
+                </Link>
+                </p>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between">
-            <div className="text-gray-500 text-sm">
-              © 2025 Eunpyeong Archive. All rights reserved.
-            </div>
+       {/* Footer */}
+      <footer className="bg-gray-900/90 backdrop-blur-sm text-white mt-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row justify-between items-center text-gray-400">
+            <p>&copy; 2025 Eunpyeong Archive. All rights reserved.</p>
           </div>
         </div>
       </footer>
