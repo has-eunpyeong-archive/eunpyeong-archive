@@ -91,30 +91,32 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <div className="min-h-screen bg-[url('/img/bukhansan.jpg')] bg-cover bg-center bg-fixed">
+      <div className="bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <Header />
+      </div>
 
       <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
-                <i className="ri-user-add-line text-white text-2xl"></i>
-              </div>
+           <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden p-8 lg:p-12">
+            <div className="text-center mb-8">
+                <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
+                    <i className="ri-user-add-line text-white text-2xl"></i>
+                </div>
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">회원가입</h2>
+                <p className="text-gray-600">
+                Eunpyeong Archive에 가입하여 학술 자료를 공유해보세요
+                </p>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">회원가입</h2>
-            <p className="text-gray-600">
-              Eunpyeong Archive에 가입하여 학술 자료를 공유해보세요
-            </p>
-          </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-8">
             {message && (
               <div
                 className={`mb-4 p-3 rounded-lg text-sm ${
                   message.includes("완료")
-                    ? "bg-green-50 text-green-700"
-                    : "bg-red-50 text-red-700"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
                 }`}
               >
                 {message}
@@ -137,7 +139,7 @@ export default function Register() {
                     required
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 bg-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="성명을 입력하세요"
                   />
                   <i className="ri-user-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 flex items-center justify-center"></i>
@@ -159,7 +161,7 @@ export default function Register() {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 bg-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="이메일을 입력하세요"
                   />
                   <i className="ri-mail-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 flex items-center justify-center"></i>
@@ -179,7 +181,7 @@ export default function Register() {
                   required
                   value={formData.grade}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-8"
+                  className="w-full px-3 py-3 border border-gray-200 bg-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-8"
                 >
                   <option value="">선택</option>
                   <option value="1">1학년</option>
@@ -203,7 +205,7 @@ export default function Register() {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-200 bg-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="비밀번호를 입력하세요"
                   />
                   <i className="ri-lock-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 flex items-center justify-center"></i>
@@ -239,7 +241,7 @@ export default function Register() {
                     required
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-200 bg-white/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="비밀번호를 다시 입력하세요"
                   />
                   <i className="ri-lock-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 flex items-center justify-center"></i>
@@ -265,7 +267,7 @@ export default function Register() {
                   required
                   checked={formData.agreedToTerms}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-200 rounded cursor-pointer"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
                 />
                 <label
                   htmlFor="agreedToTerms"
@@ -292,16 +294,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-
-      <footer className="bg-white border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between">
-            <div className="text-gray-500 text-sm">
-              © 2025 Eunpyeong Archive. All rights reserved.
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
