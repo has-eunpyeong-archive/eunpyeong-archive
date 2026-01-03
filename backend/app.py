@@ -1,14 +1,15 @@
 import os
-from flask import Flask, jsonify, request, send_from_directory, abort
+import traceback
+from datetime import datetime, timedelta
+from functools import wraps
+
+import jwt
+from dotenv import load_dotenv
+from flask import Flask, abort, jsonify, request, send_from_directory
+from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
-from dotenv import load_dotenv
-from datetime import datetime, timedelta
-import jwt
-import traceback
 from werkzeug.utils import secure_filename
-from functools import wraps
 
 load_dotenv()
 
@@ -259,7 +260,7 @@ def add_document(current_user):
             return jsonify({"error": "No selected file"}), 400
 
         title = request.form.get("title")
-        category = request.form.get("category", "일반")
+        category = request.form.get("category", "학술팀 보고서")
         description = request.form.get("description", "")
 
         if not title:

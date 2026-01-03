@@ -62,7 +62,12 @@ function UploadForm() {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  const categories = ["논문", "포스터", "영상", "DB", "일반"];
+  const categories = [
+    "학술팀 보고서",
+    "미디어팀 보고서",
+    "미디어팀 미디어",
+    "기타",
+  ];
 
   const handleInputChange = (
     e: React.ChangeEvent<

@@ -96,11 +96,10 @@ function ArchiveContent() {
 
   const categories = [
     { id: "all", name: "전체", icon: "ri-folder-line" },
-    { id: "paper", name: "논문", icon: "ri-book-line" },
-    { id: "poster", name: "포스터", icon: "ri-image-line" },
-    { id: "video", name: "영상", icon: "ri-video-line" },
-    { id: "DB", name: "DB", icon: "ri-database-2-line" },
-    { id: "일반", name: "일반", icon: "ri-file-line" },
+    { id: "academic-report", name: "학술팀 보고서", icon: "ri-book-line" },
+    { id: "media-report", name: "미디어팀 보고서", icon: "ri-file-text-line" },
+    { id: "media-content", name: "미디어팀 미디어", icon: "ri-video-line" },
+    { id: "etc", name: "기타", icon: "ri-file-line" },
   ];
 
   // 클라이언트 측 필터링 및 정렬 로직 제거
@@ -184,15 +183,13 @@ function ArchiveContent() {
   };
 
   const getCategoryColor = (category: string) => {
-    switch (category.toLowerCase()) {
-      case "논문":
+    switch (category) {
+      case "학술팀 보고서":
         return "bg-blue-100 text-blue-600";
-      case "포스터":
+      case "미디어팀 보고서":
         return "bg-green-100 text-green-600";
-      case "영상":
+      case "미디어팀 미디어":
         return "bg-purple-100 text-purple-600";
-      case "db":
-        return "bg-yellow-100 text-yellow-600";
       default:
         return "bg-gray-100 text-gray-600";
     }
