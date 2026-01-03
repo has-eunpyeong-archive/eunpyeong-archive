@@ -15,9 +15,10 @@ interface Paper {
 
 // 슬라이드쇼에 사용할 배경 이미지 목록
 const backgroundImages = [
-  "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2728&auto=format&fit=crop", // 도서관
-  "https://images.unsplash.com/photo-1579149296294-17e84369f3d2?q=80&w=2832&auto=format&fit=crop", // 현미경/연구
-  "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2940&auto=format&fit=crop", // 학생/협업
+  "/img/spring.png",
+  "/img/summer.png",
+  "/img/fall.png",
+  "/img/winter.png",
 ];
 
 export default function Home() {
@@ -117,7 +118,7 @@ export default function Home() {
           </div>
 
           {/* 반투명 블러 오버레이 */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-700 opacity-75 backdrop-blur-sm"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-white-500 to-white-700 opacity-50 backdrop-blur-sm"></div>
 
           {/* 텍스트 콘텐츠 */}
           <div className="relative h-full flex items-center justify-between px-8 lg:px-16">
